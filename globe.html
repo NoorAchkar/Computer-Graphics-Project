@@ -1,61 +1,158 @@
-
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Three.js Globe</title>
-    <style>
-      body { margin: 0; }
-    </style>
-  </head>
-  <body>
+<html lang="en">
+	<head>
+		<title>threejs webgl - globen - girls</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+	<body>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
+		<div id="container"></div>
+		<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener">threejs</a> - Globen Girls Project</div>
 
-    <script>
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "./build/three.module.js",
+					"three/addons/": "./jsm/"
+				}
+			}
+		</script>
 
-      let scene, camera, renderer;
+		<script type="module">
 
-      // Create a scene
-      scene = new THREE.Scene();
+			import * as THREE from 'three';
 
-      // Create a camera
-      camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
-      camera.position.z = 400;
+			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+			import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 
-      // Create a renderer
-      renderer = new THREE.WebGLRenderer();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      document.body.appendChild(renderer.domElement);
+			const params = {
+				color: 0xffffff,
+				transmission: 1,
+				opacity: 1,
+				metalness: 0,
+				roughness: 0,
+				ior: 1.5,
+				thickness: 0.01,
+				specularIntensity: 1,
+				specularColor: 0xffffff,
+				envMapIntensity: 1,
+				lightIntensity: 1,
+				exposure: 1
+			};
 
-      // Create a sphere
-      const geometry = new THREE.SphereGeometry(200, 200, 200);
-      const texture = new THREE.TextureLoader().load('textures/crate.gif');
-      const material = new THREE.MeshBasicMaterial( {
-        color: 0xffffff,
-        transparent: true,
-        opacity: 0.7
-      });
-      var sphere = new THREE.Mesh(geometry, material);
-      scene.add(sphere);
+			let camera, scene, renderer;
 
-      // Create a light source
-      var light = new THREE.PointLight(0xffffff);
-      light.position.set(2, 2, 2);
-      scene.add(light);
+			let mesh;
 
-      // Animation loop
-      var animate = function () {
-        requestAnimationFrame(animate);
+			const hdrEquirect = new RGBELoader()
+				.setPath( 'textures/equirectangular/' )
+				.load( 'royal_esplanade_1k.hdr', function () {
 
-        // Rotate the sphere
-        sphere.rotation.x += 0.01;
-        sphere.rotation.y += 0.01;
+					hdrEquirect.mapping = THREE.EquirectangularReflectionMapping;
 
-        renderer.render(scene, camera);
-      };
+					init();
+					render();
 
-      animate();
-    </script>
-  </body>
+				} );
+
+			function init() {
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.shadowMap.enabled = true;
+				document.body.appendChild( renderer.domElement );
+
+				renderer.toneMapping = THREE.ACESFilmicToneMapping;
+				renderer.toneMappingExposure = params.exposure;
+
+
+				scene = new THREE.Scene();
+
+				camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 2000 );
+				camera.position.set( 0, 0, 120 );
+
+				//
+
+				//scene.background = hdrEquirect;
+
+				//
+
+				const geometry = new THREE.SphereGeometry( 30, 64, 32 );
+
+				const texture = new THREE.CanvasTexture( generateTexture() );
+				texture.magFilter = THREE.NearestFilter;
+				texture.wrapT = THREE.RepeatWrapping;
+				texture.wrapS = THREE.RepeatWrapping;
+				texture.repeat.set( 1, 3.5 );
+
+				const material = new THREE.MeshPhysicalMaterial( {
+					color: params.color,
+					metalness: params.metalness,
+					roughness: params.roughness,
+					ior: params.ior,
+                    envMap: hdrEquirect, //makes the reflective material on the ball
+					envMapIntensity: params.envMapIntensity,
+					transmission: params.transmission, // use material.transmission for glass materials
+					specularIntensity: params.specularIntensity,
+					specularColor: params.specularColor,
+					opacity: params.opacity,
+					side: THREE.DoubleSide,
+					transparent: true
+				} );
+
+				mesh = new THREE.Mesh( geometry, material );
+				scene.add( mesh );
+
+				//
+
+				const controls = new OrbitControls( camera, renderer.domElement );
+				controls.addEventListener( 'change', render ); // use if there is no animation loop
+				controls.minDistance = 10;
+				controls.maxDistance = 150;
+
+				window.addEventListener( 'resize', onWindowResize );
+
+			}
+
+			function onWindowResize() {
+
+				const width = window.innerWidth;
+				const height = window.innerHeight;
+
+				camera.aspect = width / height;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( width, height );
+
+				render();
+
+			}
+
+			//
+
+			function generateTexture() {
+
+				const canvas = document.createElement( 'canvas' );
+				canvas.width = 2;
+				canvas.height = 2;
+
+				const context = canvas.getContext( '2d' );
+				context.fillStyle = 'white';
+				context.fillRect( 0, 1, 2, 1 );
+
+				return canvas;
+
+			}
+
+			function render() {
+
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+	</body>
 </html>
