@@ -46,9 +46,12 @@
 
 			let mesh;
 
+			//init();
+			//render();
+
 			const hdrEquirect = new RGBELoader()
 				.setPath( 'textures/equirectangular/' )
-				.load( 'royal_esplanade_1k.hdr', function () {
+				.load( 'venice_sunset_1k.hdr', function () {
 
 					hdrEquirect.mapping = THREE.EquirectangularReflectionMapping;
 
@@ -76,7 +79,7 @@
 
 				//
 
-				//scene.background = hdrEquirect;
+				scene.background = new THREE.Color(0xbbbbbb); // Grey background
 
 				//
 
