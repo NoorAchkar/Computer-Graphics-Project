@@ -139,13 +139,49 @@
 
 				gui = new GUI( { title: 'Season' } );
 
-				/*gui.add( API, '', 0, 1, 0.02 )
-					.name( 'winter' )
-					.onChange( function () {
+				const seasonParams = {
+					winter: 0,
+					spring: 0,
+					summer: 0,
+					fall: 0,
+				};
 
-						//lightProbe.intensity = API.lightProbeIntensity; render();
+				gui.add(seasonParams, 'winter', 0, 1, 0.02)
+					.name('Winter')
+					.onChange(function () {
+						// Adjust parameters for winter season
+						material.color.setHex(seasonParams.winter > 0.5 ? 0x99ccff : 0xffffff); // change this to the function that makes winter
+						// Add other parameter adjustments as needed
+						render();
+					});
+				
+				
+				gui.add(seasonParams, 'spring', 0, 1, 0.02)
+					.name('Spring')
+					.onChange(function () {
+						// Adjust parameters for winter season
+						material.color.setHex(seasonParams.spring > 0.5 ? 0x99ccff : 0xffffff); // change this to the function that makes spring
+						// Add other parameter adjustments as needed
+						render();
+					});
 
-					} ); */
+				gui.add(seasonParams, 'summer', 0, 1, 0.02)
+					.name('Summer')
+					.onChange(function () {
+						// Adjust parameters for winter season
+						material.color.setHex(seasonParams.summer > 0.5 ? 0x99ccff : 0xffffff); // change this to the function that makes summer
+						// Add other parameter adjustments as needed
+						render();
+					});
+				
+				gui.add(seasonParams, 'fall', 0, 1, 0.02)
+					.name('Fall')
+					.onChange(function () {
+						// Adjust parameters for winter season
+						material.color.setHex(seasonParams.fall > 0.5 ? 0x99ccff : 0xffffff); // change this to the function that makes fall
+						// Add other parameter adjustments as needed
+						render();
+					});
 
 				window.addEventListener( 'resize', onWindowResize );
 
