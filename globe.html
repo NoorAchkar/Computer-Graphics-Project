@@ -9,7 +9,7 @@
 	<body>
 
 		<div id="container"></div>
-		<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener">threejs</a> - Globen Girls Project</div>
+		<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - Globen Girls Project</div>
 
 		<script type="importmap">
 			{
@@ -47,6 +47,15 @@
 
 			let mesh;
 			let gui;
+
+			let positions = [], velocities = [];
+			let particles;
+
+			const snowflakesNum = 1000;
+
+			const snowGeometry = new THREE.BufferGeometry();
+			const loadInTexture = new THREE.TextureLoader();
+
 
 			//init();
 			//render();
@@ -139,6 +148,7 @@
 				controls.maxDistance = 150;
 
 				snowFlake();
+				animate();
 
 				// Title for the sliders
 				gui = new GUI( { title: 'Season' } );
@@ -201,6 +211,7 @@
 
 			}
 			
+			/*
 			// current issue for the image (if you zoom in on the snowballs you realize that it is an image but not a snowflake)
 			function snowFlake() {
 				// Create a snow texture
@@ -237,6 +248,105 @@
 				// Create a snow particle system
 				const snowParticles = new THREE.Points(snowGeometry, snowMaterial);
 				scene.add(snowParticles);
+			}
+			*/
+
+			function snowFlake() { //another snowflake attempt
+				var i;
+
+				// const maxXZ = 1000;
+				// const minXZ = maxXZ/2; //place the snowflakes from -500 to 500 on x and z axes
+				// const minY = 150; //place the snowflakes from 150 to 500 on the y axis
+
+				// create the geometry of the snowflakes and add them to the scene
+				for (i = 0; i < snowflakesNum; i++) {
+					// Distribute snow particles randomly in the circle -- from previous function
+						
+					// Generate a random angle (in radians) for polar coordinates
+					const theta = Math.random() * Math.PI * 2;
+
+					// Generate a random radius within the desired circle
+					const radius = Math.random() * 24;
+
+					// Convert polar coordinates to Cartesian coordinates
+					const x = radius * Math.cos(theta);
+					const y = radius * Math.sin(theta);
+					const z = (Math.random() - 0.5) * 36;
+
+					positions.push(x, y, z);
+
+
+					// Randomly generate different velocities for the individual snowflakes
+					const xv = Math.floor(Math.random() * 6 - 3) * 0.1; 
+					const yv = Math.floor(Math.random() * 5 + 0.12) * 0.18; 
+					const zv = Math.floor(Math.random() * 6 - 3) * 0.1; 
+					
+					velocities.push(xv, yv, zv);
+				}
+
+				//set attributes for both positions and velocities of the snowflakes
+				snowGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+				snowGeometry.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3));
+
+				//create the snowflake texture/material
+				const snowflakeTexture = new THREE.PointsMaterial({
+					size: 3,
+					map: loadInTexture.load("snowflake-transparent.png"),
+					blending: THREE.AdditiveBlending, // basically makes the snowsflake brighter and whiter than normal blending
+					depthTest: false,
+					transparent: true,
+					opacity: 0.6,
+				});
+
+				particles = new THREE.Points(snowGeometry, snowflakeTexture);
+				scene.add(particles);
+
+			}
+
+			function animate() {
+				// requestAnimationFrame(animate);
+				animateSnow();
+				// render();
+			}
+
+			function animateSnow() {
+				const theta = Math.random() * Math.PI * 2;
+				const radius = Math.random() * 24;
+
+				for (var i = 0; i < snowflakesNum * 3; i += 3) {
+					//each snowflake has xyz (3) position and xyz (3) velocity
+
+					
+					//change the x position by the x velocity -- in the array the x position is i
+					positions[i] -= velocities[i];
+					//change the y position by the y velocity -- in the array the y position is i + 1
+					positions[i + 1] -= velocities[i + 1];
+					//change the z position by the z velocity -- in the array the z position is i + 2
+					positions[i + 2] -= velocities[i + 2];
+
+					//need to check if the snowflakes go below ground (below 10??) -- if it does, reset it's starting position
+					// if (particles.snowGeometry.attributes.position.array[i + 1] < 10) {
+					// 	particles.snowGeometry.attributes.position.array[i] = radius * Math.cos(theta);
+					// 	particles.snowGeometry.attributes.position.array[i + 1] = radius * Math.sin(theta);
+					// 	particles.snowGeometry.attributes.position.array[i + 2] = (Math.random() - 0.5) * 36;
+					// } 
+					// var time = 20;
+
+					// var snowPos = snowGeometry.positions[i];
+					// var snowVel = snowGeometry.velocities[i];
+					// snowVel.x += 0.1 * Math.sin( i/30  + 20/40 );
+					// snowVel.y -= 0.1 * Math.cos( i/150 + time/70 ) + 0.2;
+					// snowVel.z += 0.1 * Math.cos( i/50  + time/20 );
+
+					// console.log("x " + positions[i]);
+					// console.log("y " + positions[i+1]);
+					// console.log("z " +positions[i+2]);
+				
+				}
+				
+
+				// since the attribute is changed, need to send to the GPU again tp update the particles position
+				positions.needsUpdate = true;
 			}
 
 			function generateTexture() {
