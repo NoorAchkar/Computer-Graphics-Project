@@ -28,6 +28,13 @@
 				<input type="radio" id="winter" name="season" value="winter"  />
 				<label for="winter">Winter</label>
 			</div>
+			<br>
+			<!-- Music switch -->
+			<label class="switch" id="music">
+				<input type="checkbox">
+				<span class="slider round"></span>
+			</label>
+			
 		</fieldset>
 		  
 
@@ -114,6 +121,13 @@
 
 
 			init();
+
+			//background music per season
+			const listener = new THREE.AudioListener();
+			camera.add(listener);
+			const bgMusic = new THREE.Audio(listener);
+			const audioLoader = new THREE.AudioLoader();
+
 			render();
 
 			/*const hdrEquirect = new RGBELoader()
@@ -260,6 +274,8 @@
 				window.addEventListener( 'resize', onWindowResize );
 
 				document.getElementById( "spring" ).onclick = function () {
+					bgMusic.stop();
+					seasonsMusic("spring");
 
 					makeParticles(springImage, THREE.NormalBlending);
 
@@ -289,6 +305,8 @@
 				};
 
 				document.getElementById( "summer" ).onclick = function () {
+					bgMusic.stop();
+					seasonsMusic("summer");
 
 					makeParticles(summerImage, THREE.NormalBlending);
 
@@ -318,6 +336,8 @@
 				};
 
 				document.getElementById( "fall" ).onclick = function () {
+					bgMusic.stop();
+					seasonsMusic("fall");
 
 					makeParticles(fallImage, THREE.NormalBlending);
 
@@ -347,6 +367,8 @@
 				};
 
 				document.getElementById( "winter" ).onclick = function () {
+					bgMusic.stop();
+					seasonsMusic("winter");
 
 					makeParticles(winterImage, THREE.AdditiveBlending);
 
@@ -469,6 +491,49 @@
 
 			}
 
+			function seasonsMusic(season) {
+				switch (season) {
+					case "winter":
+						audioLoader.load('music/Deck_the_Halls.mp3', function(buffer) {
+							bgMusic.setBuffer(buffer);
+							bgMusic.setLoop(true);
+							bgMusic.setVolume(0.6);
+							bgMusic.play();
+						});
+						
+						break;
+					case "spring":
+						audioLoader.load('music/spring-piano-and-strings.mp3', function(buffer) {
+							bgMusic.setBuffer(buffer);
+							bgMusic.setLoop(true);
+							bgMusic.setVolume(0.6);
+							bgMusic.play();
+						});
+						
+						break;
+					case "summer":
+						audioLoader.load('music/summer_leva-eternity.mp3', function(buffer) {
+							bgMusic.setBuffer(buffer);
+							bgMusic.setLoop(true);
+							bgMusic.setVolume(0.6);
+							bgMusic.play();
+						});
+						
+						break;
+					case "fall":
+						audioLoader.load('music/fall_let-the-mystery-unfold.mp3', function(buffer) {
+							bgMusic.setBuffer(buffer);
+							bgMusic.setLoop(true);
+							bgMusic.setVolume(0.6);
+							bgMusic.play();
+						});
+						
+						break;
+				}
+
+
+			}
+
 			function render() {
 
 				const time = Date.now() * 0.00005;
@@ -480,7 +545,11 @@
 					if ( object instanceof THREE.Points ) {
 						object.rotation.y = time * ( i < 4 ? i + 1 : - ( i + 1 ) );
 					}
-				}				
+				}	
+				
+				//music toggle
+				// var isChecked = document.getElementsByClassName( "switch" ).checked;
+				// console.log(isChecked);
 
 				renderer.render( scene, camera );
 			}
