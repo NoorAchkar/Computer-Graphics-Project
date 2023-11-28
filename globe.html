@@ -83,6 +83,11 @@
 			const roofColor = 0x97795F; // brown
 			const winterRoofColor = 0xffffff; // white
 
+			const springImage = "petal2.png";
+			const summerImage = "bubble.png";
+			const fallImage = "leaf.png";
+			const winterImage = "snowflake-transparent.png";
+
 
 			const snowflakesNum = 1000;
 
@@ -198,7 +203,6 @@
 				controls.minDistance = 10;
 				controls.maxDistance = 150;
 
-				snowFlake();
 				animate();
 
 				// // Title for the sliders
@@ -256,6 +260,9 @@
 				window.addEventListener( 'resize', onWindowResize );
 
 				document.getElementById( "spring" ).onclick = function () {
+
+					makeParticles(springImage, THREE.NormalBlending);
+
 					for ( let i = 0; i < scene.children.length; i ++ ) {
 						const object = scene.children[ i ];
 
@@ -282,6 +289,9 @@
 				};
 
 				document.getElementById( "summer" ).onclick = function () {
+
+					makeParticles(summerImage, THREE.NormalBlending);
+
 					for ( let i = 0; i < scene.children.length; i ++ ) {
 						const object = scene.children[ i ];
 
@@ -308,6 +318,9 @@
 				};
 
 				document.getElementById( "fall" ).onclick = function () {
+
+					makeParticles(fallImage, THREE.NormalBlending);
+
 					for ( let i = 0; i < scene.children.length; i ++ ) {
 						const object = scene.children[ i ];
 
@@ -334,6 +347,9 @@
 				};
 
 				document.getElementById( "winter" ).onclick = function () {
+
+					makeParticles(winterImage, THREE.AdditiveBlending);
+
 					for ( let i = 0; i < scene.children.length; i ++ ) {
 						const object = scene.children[ i ];
 
@@ -374,11 +390,23 @@
 
 			}
 
-			function snowFlake() { 
-				var i;
+			function clearParticles() {
+				positions = []
+				for ( let i = scene.children.length; i > 0; i -- ) {
+					const object = scene.children[ i ];
+
+					if ( object instanceof THREE.Points ) {
+						scene.remove(object);
+					}
+				}	
+			}
+
+			function makeParticles(image, blending) { 
+
+				clearParticles();
 
 				// create the geometry of the snowflakes and add them to the scene
-				for (i = 0; i < snowflakesNum; i++) {
+				for (let i = 0; i < snowflakesNum; i++) {
 					// Distribute snow particles randomly in the sphere
 
 					// Generate a random angles (in radians) for polar coordinates
@@ -404,8 +432,8 @@
 				//create the snowflake texture/material
 				const snowflakeTexture = new THREE.PointsMaterial({
 					size: 3,
-					map: loadInTexture.load("snowflake-transparent.png"),
-					blending: THREE.AdditiveBlending, // basically makes the snowsflake brighter and whiter than normal blending
+					map: loadInTexture.load(image),
+					blending: blending, // basically makes the snowsflake brighter and whiter than normal blending
 					depthTest: false,
 					transparent: true,
 					opacity: 0.6,
