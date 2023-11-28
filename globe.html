@@ -10,6 +10,7 @@
 
 		<div id="container"></div>
 		<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - Globen Girls Project</div>
+		<button id= "winter">Turn ground white</button>
 
 		<script type="importmap">
 			{
@@ -25,8 +26,12 @@
 			import * as THREE from 'three';
 
 			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+			import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 			import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 			import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+
+			import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+			import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 			const params = {
 				color: 0xffffff,
@@ -54,6 +59,24 @@
 
 			const snowGeometry = new THREE.BufferGeometry();
 			const loadInTexture = new THREE.TextureLoader();
+
+			// load 3d models
+			const dracoLoader = new DRACOLoader();
+			dracoLoader.setDecoderPath( 'jsm/libs/draco/gltf/' );
+
+			const loader = new GLTFLoader();
+			loader.setDRACOLoader( dracoLoader );
+			loader.load( 'models/gltf/house.glb', function ( gltf ) {
+
+				const model = gltf.scene;
+				model.position.set( 0, -26, 0 );
+				model.scale.set( 5, 5, 5 );
+				scene.add( model );
+
+			}, undefined, function ( e ) {
+				console.error( e );
+			} );
+
 
 
 			init();
@@ -87,7 +110,9 @@
 				camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 2000 );
 				camera.position.set( 0, 0, 120 );
 
+				const pmremGenerator = new THREE.PMREMGenerator( renderer );
 				scene.background = new THREE.Color(0x7d7d7d); // Grey background
+				scene.environment = pmremGenerator.fromScene( new RoomEnvironment( renderer ), 0.04 ).texture;
 
 				const geometry = new THREE.SphereGeometry( 30, 64, 32 );
 
@@ -201,6 +226,24 @@
 
 				window.addEventListener( 'resize', onWindowResize );
 
+				document.getElementById( "winter" ).onclick = function () {
+					for ( let i = 0; i < scene.children.length; i ++ ) {
+						const object = scene.children[ i ];
+
+						// change ground to white
+						if ( object instanceof THREE.Group ) {
+							for (let k = 0; k < object.children.length; k++) {
+								if (object.children[k].name == "ground") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(0xffffff);
+								}
+							}
+						}
+					}
+				};
 			}
 
 			function onWindowResize() {
@@ -295,7 +338,7 @@
 					if ( object instanceof THREE.Points ) {
 						object.rotation.y = time * ( i < 4 ? i + 1 : - ( i + 1 ) );
 					}
-				}
+				}				
 
 				renderer.render( scene, camera );
 			}
