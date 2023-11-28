@@ -11,6 +11,26 @@
 		<div id="container"></div>
 		<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - Globen Girls Project</div>
 
+		<fieldset>
+			<div>
+				<input type="radio" id="spring" name="season" value="spring"  />
+				<label for="spring">Spring</label>
+			</div>
+			<div>
+				<input type="radio" id="summer" name="season" value="summer" checked />
+				<label for="summer">Summer</label>
+			</div>
+			<div>
+				<input type="radio" id="fall" name="season" value="fall"  />
+				<label for="fall">Fall</label>
+			</div>
+			<div>
+				<input type="radio" id="winter" name="season" value="winter"  />
+				<label for="winter">Winter</label>
+			</div>
+		</fieldset>
+		  
+
 		<script type="importmap">
 			{
 				"imports": {
@@ -25,8 +45,12 @@
 			import * as THREE from 'three';
 
 			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+			import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 			import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 			import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+
+			import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+			import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 			const params = {
 				color: 0xffffff,
@@ -50,10 +74,38 @@
 			let positions = [], velocities = [];
 			let particles;
 
+
+			const springGroundColor = 0x2bc41b; // light green
+			const summerGroundColor = 0x3b9532; // bright green
+			const fallGroundColor = 0x558038;  // murky green
+			const winterGroundColor = 0xffffff; // white
+
+			const roofColor = 0x97795F; // brown
+			const winterRoofColor = 0xffffff; // white
+
+
 			const snowflakesNum = 1000;
 
 			const snowGeometry = new THREE.BufferGeometry();
 			const loadInTexture = new THREE.TextureLoader();
+
+			// load 3d models
+			const dracoLoader = new DRACOLoader();
+			dracoLoader.setDecoderPath( 'jsm/libs/draco/gltf/' );
+
+			const loader = new GLTFLoader();
+			loader.setDRACOLoader( dracoLoader );
+			loader.load( 'models/gltf/house.glb', function ( gltf ) {
+
+				const model = gltf.scene;
+				model.position.set( 0, -26, 0 );
+				model.scale.set( 5, 5, 5 );
+				scene.add( model );
+
+			}, undefined, function ( e ) {
+				console.error( e );
+			} );
+
 
 
 			init();
@@ -87,7 +139,9 @@
 				camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 2000 );
 				camera.position.set( 0, 0, 120 );
 
+				const pmremGenerator = new THREE.PMREMGenerator( renderer );
 				scene.background = new THREE.Color(0x7d7d7d); // Grey background
+				scene.environment = pmremGenerator.fromScene( new RoomEnvironment( renderer ), 0.04 ).texture;
 
 				const geometry = new THREE.SphereGeometry( 30, 64, 32 );
 
@@ -147,60 +201,163 @@
 				snowFlake();
 				animate();
 
-				// Title for the sliders
-				gui = new GUI( { title: 'Season' } );
+				// // Title for the sliders
+				// gui = new GUI( { title: 'Season' } );
 
-				const seasonParams = {
-					winter: 0,
-					spring: 0,
-					summer: 0,
-					fall: 0,
-				};
+				// const seasonParams = {
+				// 	winter: 0,
+				// 	spring: 0,
+				// 	summer: 0,
+				// 	fall: 0,
+				// };
 
-				gui.add(seasonParams, 'winter', 0, 1, 0.02)
-					.name('Winter')
-					.onChange(function () {
-						// Remove existing snow particles if they exist
-						const existingSnow = scene.getObjectByName('snowParticles');
-						if (existingSnow) {
-							scene.remove(existingSnow);
-						}
+				// gui.add(seasonParams, 'winter', 0, 1, 0.02)
+				// 	.name('Winter')
+				// 	.onChange(function () {
+				// 		// Remove existing snow particles if they exist
+				// 		const existingSnow = scene.getObjectByName('snowParticles');
+				// 		if (existingSnow) {
+				// 			scene.remove(existingSnow);
+				// 		}
 
-						// Add new snow particles if the condition is met
-						if (seasonParams.winter > 0.1) {
-							snowFlake();
-						}
+				// 		// Add new snow particles if the condition is met
+				// 		if (seasonParams.winter > 0.1) {
+				// 			snowFlake();
+				// 		}
 
-						render();
-					});
+				// 		render();
+				// 	});
 				
 				
-				gui.add(seasonParams, 'spring', 0, 1, 0.02)
-					.name('Spring')
-					.onChange(function () {
-						// Adjust parameters for spring season
-						material.color.setHex(seasonParams.spring > 0.5 ? 0x99ccff : 0xffffff); // change this to the function that makes spring
-						render();
-					});
+				// gui.add(seasonParams, 'spring', 0, 1, 0.02)
+				// 	.name('Spring')
+				// 	.onChange(function () {
+				// 		// Adjust parameters for spring season
+				// 		material.color.setHex(seasonParams.spring > 0.5 ? 0x99ccff : 0xffffff); // change this to the function that makes spring
+				// 		render();
+				// 	});
 
-				gui.add(seasonParams, 'summer', 0, 1, 0.02)
-					.name('Summer')
-					.onChange(function () {
-						// Adjust parameters for summer season
-						material.color.setHex(seasonParams.summer > 0.5 ? 0x99ccff : 0xffffff); // change this to the function that makes summer
-						render();
-					});
+				// gui.add(seasonParams, 'summer', 0, 1, 0.02)
+				// 	.name('Summer')
+				// 	.onChange(function () {
+				// 		// Adjust parameters for summer season
+				// 		material.color.setHex(seasonParams.summer > 0.5 ? 0x99ccff : 0xffffff); // change this to the function that makes summer
+				// 		render();
+				// 	});
 				
-				gui.add(seasonParams, 'fall', 0, 1, 0.02)
-					.name('Fall')
-					.onChange(function () {
-						// Adjust parameters for fall season
-						material.color.setHex(seasonParams.fall > 0.5 ? 0x99ccff : 0xffffff); // change this to the function that makes fall
-						render();
-					});
+				// gui.add(seasonParams, 'fall', 0, 1, 0.02)
+				// 	.name('Fall')
+				// 	.onChange(function () {
+				// 		// Adjust parameters for fall season
+				// 		material.color.setHex(seasonParams.fall > 0.5 ? 0x99ccff : 0xffffff); // change this to the function that makes fall
+				// 		render();
+				// 	});
 
 				window.addEventListener( 'resize', onWindowResize );
 
+				document.getElementById( "spring" ).onclick = function () {
+					for ( let i = 0; i < scene.children.length; i ++ ) {
+						const object = scene.children[ i ];
+
+						// change ground and roof color
+						if ( object instanceof THREE.Group ) {
+							for (let k = 0; k < object.children.length; k++) {
+								if (object.children[k].name == "ground") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(springGroundColor);
+								}
+								else if (object.children[k].name == "roof") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(roofColor);
+								}
+							}
+						}
+					}
+				};
+
+				document.getElementById( "summer" ).onclick = function () {
+					for ( let i = 0; i < scene.children.length; i ++ ) {
+						const object = scene.children[ i ];
+
+						// change ground and roof color
+						if ( object instanceof THREE.Group ) {
+							for (let k = 0; k < object.children.length; k++) {
+								if (object.children[k].name == "ground") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(summerGroundColor);
+								}
+								else if (object.children[k].name == "roof") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(roofColor);
+								}
+							}
+						}
+					}
+				};
+
+				document.getElementById( "fall" ).onclick = function () {
+					for ( let i = 0; i < scene.children.length; i ++ ) {
+						const object = scene.children[ i ];
+
+						// change ground and roof color
+						if ( object instanceof THREE.Group ) {
+							for (let k = 0; k < object.children.length; k++) {
+								if (object.children[k].name == "ground") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(fallGroundColor);
+								}
+								else if (object.children[k].name == "roof") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(roofColor);
+								}
+							}
+						}
+					}
+				};
+
+				document.getElementById( "winter" ).onclick = function () {
+					for ( let i = 0; i < scene.children.length; i ++ ) {
+						const object = scene.children[ i ];
+
+						// change ground and roof color
+						if ( object instanceof THREE.Group ) {
+							for (let k = 0; k < object.children.length; k++) {
+								if (object.children[k].name == "ground") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(winterGroundColor);
+								}
+								else if (object.children[k].name == "roof") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(winterRoofColor);
+								}
+							}
+						}
+					}
+				};
 			}
 
 			function onWindowResize() {
@@ -295,7 +452,7 @@
 					if ( object instanceof THREE.Points ) {
 						object.rotation.y = time * ( i < 4 ? i + 1 : - ( i + 1 ) );
 					}
-				}
+				}				
 
 				renderer.render( scene, camera );
 			}
