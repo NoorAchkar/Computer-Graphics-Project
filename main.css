@@ -7,6 +7,7 @@ body {
 	font-size: 14px;
 	margin: 0;
 	overflow: hidden;
+	text-align: center;
 }
 
 hr {
@@ -784,4 +785,15 @@ input:checked + .slider:after
 {  
   content:'Music ON';
   color: rgb(255, 255, 255);
+}
+
+.radio-container {
+    display: flex; 
+	border-radius: 5px;
+	max-width: 500px;
+	margin-left: 900px;
+}
+
+.radio-container div {
+    margin-right: 10px; 
 }

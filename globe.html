@@ -11,22 +11,22 @@
 		<div id="container"></div>
 		<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - Globen Girls Project</div>
 
-		<fieldset>
+		<fieldset class="radio-container">
 			<div>
 				<input type="radio" id="spring" name="season" value="spring"  />
-				<label for="spring">Spring</label>
+				<label for="spring">Spring &#x1F338</label>
 			</div>
 			<div>
 				<input type="radio" id="summer" name="season" value="summer" checked />
-				<label for="summer">Summer</label>
+				<label for="summer">Summer &#x1F31E</label>
 			</div>
 			<div>
 				<input type="radio" id="fall" name="season" value="fall"  />
-				<label for="fall">Fall</label>
+				<label for="fall">Fall &#x1F342</label>
 			</div>
 			<div>
 				<input type="radio" id="winter" name="season" value="winter"  />
-				<label for="winter">Winter</label>
+				<label for="winter">Winter &#x2744</label>
 			</div>
 			<br>
 			<!-- Music switch -->
@@ -285,9 +285,23 @@
 
 				window.addEventListener( 'resize', onWindowResize );
 
+				const checkbox = document.querySelector('input[type="checkbox"]');
+				let currentSeason;
+
+				// music on or off
+				checkbox.addEventListener('change', function() {
+					if (this.checked) {
+						seasonsMusic(currentSeason);
+					} else {
+						bgMusic.stop();
+						
+					}
+				});
+
 				document.getElementById( "spring" ).onclick = function () {
-					bgMusic.stop();
-					seasonsMusic("spring");
+					//bgMusic.stop();
+					//seasonsMusic("spring");
+					currentSeason = "spring";
 
 					makeParticles(springImage, THREE.NormalBlending);
 
@@ -317,8 +331,9 @@
 				};
 
 				document.getElementById( "summer" ).onclick = function () {
-					bgMusic.stop();
-					seasonsMusic("summer");
+						//bgMusic.stop();
+						//seasonsMusic("summer");
+					currentSeason = "summer";
 
 					makeParticles(summerImage, THREE.NormalBlending);
 
@@ -348,8 +363,9 @@
 				};
 
 				document.getElementById( "fall" ).onclick = function () {
-					bgMusic.stop();
-					seasonsMusic("fall");
+					//bgMusic.stop();
+					//seasonsMusic("fall");
+					currentSeason = "fall";
 
 					makeParticles(fallImage, THREE.NormalBlending);
 
@@ -379,8 +395,9 @@
 				};
 
 				document.getElementById( "winter" ).onclick = function () {
-					bgMusic.stop();
-					seasonsMusic("winter");
+					//bgMusic.stop();
+					//seasonsMusic("winter");
+					currentSeason = "winter";
 
 					makeParticles(winterImage, THREE.AdditiveBlending);
 
