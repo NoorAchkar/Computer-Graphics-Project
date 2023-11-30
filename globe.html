@@ -87,6 +87,11 @@
 			const fallGroundColor = 0x558038;  // murky green
 			const winterGroundColor = 0xffffff; // white
 
+			const springSkyColor = 0xa2daf3; 
+			const summerSkyColor = 0xadd8e6; 
+			const fallSkyColor = 0x8dbcd1; 
+			const winterSkyColor = 0xb7cbd4; 
+
 			const roofColor = 0x97795F; // brown
 			const winterRoofColor = 0xffffff; // white
 
@@ -170,8 +175,8 @@
 				camera.position.set( 0, 0, 120 );
 
 				const pmremGenerator = new THREE.PMREMGenerator( renderer );
-				scene.background = new THREE.Color(0xadd8e6); 
-				scene.fog = new THREE.Fog(0xadd8e6, 100, 400);  
+				scene.background = new THREE.Color(summerSkyColor); 
+				scene.fog = new THREE.Fog(summerSkyColor, 100, 400);  
 				scene.environment = pmremGenerator.fromScene( new RoomEnvironment( renderer ), 0.04 ).texture;
 
 				// GROUND
