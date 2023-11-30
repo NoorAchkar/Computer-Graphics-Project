@@ -185,6 +185,7 @@
 					new THREE.MeshBasicMaterial({color: summerGroundColor})
 				); 
 
+				plane.receiveShadow = true; 
 				plane.rotation.x = - Math.PI / 2; 
 				plane.position.set(0, -50, 0); 
 				scene.add(plane); 
@@ -213,6 +214,7 @@
 				} );
 
 				mesh = new THREE.Mesh( geometry, material );
+				mesh.castShadow = true; 
 				scene.add( mesh );
 
 				
