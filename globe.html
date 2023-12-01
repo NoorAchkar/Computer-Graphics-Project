@@ -96,6 +96,15 @@
 			const roofColor = 0x97795F; // brown
 			const winterRoofColor = 0xffffff; // white
 
+			const woodColor = 0x613613; // brown
+			const pineColorDark = 0x1e5636; // darker green
+			const pineColorLight = 0x578c49; // lighter green
+			const pineColorLightest = 0x99be8f; // lightest green
+
+			const springLeavesColor = 0x9ac37b; //light green
+			const summerLeavesColor = 0x4ba328; //darker green
+			const fallLeavesColor = 0xdf3908; //orange
+
 			const springImage = "petal2.png";
 			const summerImage = "bubble.png";
 			const fallImage = "leaf.png";
@@ -124,6 +133,69 @@
 				console.error( e );
 			} );
 
+			//load pinetrees model
+			loader.load( 'models/gltf/pineTrees.glb', function ( gltf ) {
+
+				const model = gltf.scene;
+				model.position.set( -10, -20, -5 );
+				model.scale.set( 2, 2, 2 );
+				model.rotateY(25);
+				scene.add( model );
+
+			}, undefined, function ( e ) {
+			console.error( e );
+			} );
+
+			loader.load( 'models/gltf/pineTrees.glb', function ( gltf ) {
+
+				const model = gltf.scene;
+				model.position.set( 3, -22, -10 );
+				model.scale.set( 1.2, 1.2, 1.2 );
+				model.rotateY(THREE.MathUtils.degToRad(60));
+				scene.add( model );
+
+			}, undefined, function ( e ) {
+			console.error( e );
+			} );
+
+			//load leafy tree model
+			loader.load( 'models/gltf/leafyTree.glb', function ( gltf ) {
+
+				const model = gltf.scene;
+				model.position.set( 12, -20, -5 );
+				model.scale.set( 2, 2, 2 );
+				model.rotateY(135);
+				scene.add( model );
+
+			}, undefined, function ( e ) {
+			console.error( e );
+			} );
+
+			//load doghouse
+			loader.load( 'models/gltf/dogHouse.glb', function ( gltf ) {
+
+				const model = gltf.scene;
+				model.position.set( 10.5, -24, 7.5 );
+				model.scale.set( 1.5, 1.5, 1.5 );
+				model.rotateY(THREE.MathUtils.degToRad(-120));
+				scene.add( model );
+
+			}, undefined, function ( e ) {
+			console.error( e );
+			} );
+
+			//load mailbox
+			loader.load( 'models/gltf/mailbox.glb', function ( gltf ) {
+
+				const model = gltf.scene;
+				model.position.set( -5, -21, 9 );
+				model.scale.set( 0.55, 0.55, 0.55 );
+				model.rotateY(THREE.MathUtils.degToRad(-80));
+				scene.add( model );
+
+			}, undefined, function ( e ) {
+			console.error( e );
+			} );
 
 
 			init();
@@ -360,6 +432,28 @@
 									}
 									ground.material.color.set(roofColor);
 								}
+								else if (object.children[k].name == "largestLeaves") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(springLeavesColor);
+								}
+								else if (object.children[k].name == "BigTree") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(pineColorDark);
+								}
+								else if (object.children[k].name == "LittleTree") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(pineColorLight);
+								}
+								
 							}
 						}
 					}
@@ -406,6 +500,27 @@
 									}
 									ground.material.color.set(roofColor);
 								}
+								else if (object.children[k].name == "largestLeaves") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(summerLeavesColor);
+								}
+								else if (object.children[k].name == "BigTree") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(pineColorDark);
+								}
+								else if (object.children[k].name == "LittleTree") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(pineColorLight);
+								}
 							}
 						}
 					}
@@ -438,6 +553,27 @@
 									}
 									ground.material.color.set(roofColor);
 								}
+								else if (object.children[k].name == "largestLeaves") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(fallLeavesColor);
+								}
+								else if (object.children[k].name == "BigTree") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(pineColorDark);
+								}
+								else if (object.children[k].name == "LittleTree") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(pineColorLight);
+								}
 							}
 						}
 					}
@@ -447,6 +583,7 @@
 					//bgMusic.stop();
 					//seasonsMusic("winter");
 					currentSeason = "winter";
+					let objectsToRemove = [];
 
 					makeParticles(winterImage, THREE.AdditiveBlending);
 
@@ -463,16 +600,46 @@
 									}
 									ground.material.color.set(winterGroundColor);
 								}
-								else if (object.children[k].name == "roof") {
+								else if ((object.children[k].name == "roof") || (object.children[k].name == "doghouseRoof")){
 									const ground = object.children[k]	
 									if (ground.material) {
 										ground.material = ground.material.clone();
 									}
 									ground.material.color.set(winterRoofColor);
 								}
+								else if (object.children[k].name == "BigTree") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(pineColorLight);
+								}
+								else if (object.children[k].name == "LittleTree") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(pineColorLightest);
+								}
+								else if (object.children[k].name == "largestLeaves") {
+									// objectsToRemove.push("largestLeaves");
+									// scene.children.slice().forEach(obj => scene.remove("largestLeaves"))
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(winterRoofColor);
+								}
+
 							}
 						}
 					}
+
+					// for (var i = 0; i < objectsToRemove.length; i++) {
+					// 	var selectedObject = scene.getObjectByName(objectsToRemove[i]);
+       	 			// 	scene.remove( selectedObject );
+					// 		//scene.children.slice().forEach(obj => scene.remove(obj))
+					// }
 				};
 			}
 
