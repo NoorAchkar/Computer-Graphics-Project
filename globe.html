@@ -458,6 +458,11 @@
 						}
 					}
 
+					scene.background = new THREE.Color(springSkyColor); 
+					scene.fog = new THREE.Fog(springSkyColor, 100, 400);  
+
+					plane.material.color.set(springGroundColor); 
+
 					/*
 					scene.background = new THREE.Color(springSkyColor); 
 					scene.fog = new THREE.Fog(springSkyColor, 100, 400);
@@ -524,6 +529,10 @@
 							}
 						}
 					}
+
+					scene.background = new THREE.Color(summerSkyColor); 
+					scene.fog = new THREE.Fog(summerSkyColor, 100, 400);  
+					plane.material.color.set(summerGroundColor); 
 				};
 
 				document.getElementById( "fall" ).onclick = function () {
@@ -577,6 +586,11 @@
 							}
 						}
 					}
+
+					scene.background = new THREE.Color(fallSkyColor); 
+					scene.fog = new THREE.Fog(fallSkyColor, 100, 400);  
+					plane.material.color.set(fallGroundColor); 
+
 				};
 
 				document.getElementById( "winter" ).onclick = function () {
@@ -640,6 +654,10 @@
        	 			// 	scene.remove( selectedObject );
 					// 		//scene.children.slice().forEach(obj => scene.remove(obj))
 					// }
+
+					scene.background = new THREE.Color(winterSkyColor); 
+					scene.fog = new THREE.Fog(winterSkyColor, 100, 400);  
+					plane.material.color.set(winterGroundColor); 
 				};
 			}
 
