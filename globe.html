@@ -306,19 +306,7 @@
 				scene.add( mesh );
 
 				
-				// Create a pedestal for the globe to sit on
-				// Side note: I think to place scenes inside of the globe, we have to make it hollow
-				/* Code to create a hollow globe 
-				// Create the outer globe
-				const outerGeometry = new THREE.SphereGeometry(30, 64, 32);
-
-				// Create the inner sphere to subtract
-				const innerGeometry = new THREE.SphereGeometry(25, 64, 32);
-
-				// Combine the outer and inner geometries to create a hollow globe
-				const hollowGlobeGeometry = new THREE.BufferGeometry().fromGeometry(outerGeometry);
-				hollowGlobeGeometry.merge(new THREE.BufferGeometry().fromGeometry(innerGeometry), innerGeometryMatrix);
-				*/  
+				// Create a pedestal for the globe to sit on  
 				const pedestalGeometry = new THREE.CylinderGeometry(20, 20, 10, 32); 
 				const pedestalMaterial = new THREE.MeshPhysicalMaterial({
 					color: 0x111111,
