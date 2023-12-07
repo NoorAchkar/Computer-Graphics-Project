@@ -100,6 +100,7 @@
 			const pineColorDark = 0x1e5636; // darker green
 			const pineColorLight = 0x578c49; // lighter green
 			const pineColorLightest = 0x99be8f; // lightest green
+			const doghouseRoof = 0x87695d;
 
 			const springLeavesColor = 0x9ac37b; //light green
 			const summerLeavesColor = 0x4ba328; //darker green
@@ -474,6 +475,13 @@
 									}
 									ground.material.color.set(pineColorLight);
 								}
+								else if (object.children[k].name == "doghouseRoof") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(doghouseRoof);
+								}
 								
 							}
 						}
@@ -547,6 +555,13 @@
 									}
 									ground.material.color.set(pineColorLight);
 								}
+								else if (object.children[k].name == "doghouseRoof") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(doghouseRoof);
+								}
 							}
 						}
 					}
@@ -603,6 +618,13 @@
 										ground.material = ground.material.clone();
 									}
 									ground.material.color.set(pineColorLight);
+								}
+								else if (object.children[k].name == "doghouseRoof") {
+									const ground = object.children[k]	
+									if (ground.material) {
+										ground.material = ground.material.clone();
+									}
+									ground.material.color.set(doghouseRoof);
 								}
 							}
 						}
