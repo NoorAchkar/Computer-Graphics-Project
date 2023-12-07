@@ -5,6 +5,8 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
+		<!-- add in jQuery for the music toggle -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	</head>
 	<body>
 
@@ -30,10 +32,14 @@
 			</div>
 			<br>
 			<!-- Music switch -->
-			<label class="switch" id="music">
-				<input type="checkbox">
+			<label class="switch" >
+				<input type="checkbox" id="music" class="musicCheckbox" autocomplete="off">
 				<span class="slider round"></span>
 			</label>
+			<!-- set the music to be turned off initially -->
+			<!-- <script type=text/javascript>
+				document.getElementById("music").checked = true;
+			</script> -->
 			
 		</fieldset>
 		  
@@ -420,17 +426,30 @@
 				// music on or off
 				checkbox.addEventListener('change', function() {
 					if (this.checked) {
-						seasonsMusic(currentSeason);
+						// seasonsMusic(currentSeason);
+						// musicFlag = true;
 					} else {
-						bgMusic.stop();
-						
+						// musicFlag = false;
 					}
 				});
 
 				document.getElementById( "spring" ).onclick = function () {
-					//bgMusic.stop();
-					//seasonsMusic("spring");
 					currentSeason = "spring";
+					// if (document.getElementById("music").checked) { alert('a'); }
+					// if (document.querySelector('.messageCheckbox').checked) { console.log("yes"); }
+					// var checkedValue = document.querySelector('.switch:checked').value;
+					// console.log(checkedValue);
+					// var isChecked = jQuery("#music").prop("checked");
+					// console.log(isChecked);
+
+					if (jQuery("#music").prop("checked")) {
+						bgMusic.stop();
+						seasonsMusic(currentSeason);
+					} else { bgMusic.stop(); }
+					
+					checkbox.addEventListener('change', function() {
+					if (this.checked) { seasonsMusic(currentSeason); } 
+					else { bgMusic.stop(); }});
 
 					makeParticles(springImage, THREE.NormalBlending);
 
@@ -508,9 +527,17 @@
 				};
 
 				document.getElementById( "summer" ).onclick = function () {
-						//bgMusic.stop();
-						//seasonsMusic("summer");
 					currentSeason = "summer";
+
+					if (jQuery("#music").prop("checked")) {
+						bgMusic.stop();
+						seasonsMusic(currentSeason);
+					} else { bgMusic.stop(); }
+				
+					checkbox.addEventListener('change', function() {
+					if (this.checked) { seasonsMusic(currentSeason); } 
+					else { bgMusic.stop(); }});
+
 
 					makeParticles(summerImage, THREE.NormalBlending);
 
@@ -572,9 +599,17 @@
 				};
 
 				document.getElementById( "fall" ).onclick = function () {
-					//bgMusic.stop();
-					//seasonsMusic("fall");
 					currentSeason = "fall";
+
+					if (jQuery("#music").prop("checked")) {
+						bgMusic.stop();
+						seasonsMusic(currentSeason);
+					} else { bgMusic.stop(); }
+
+					checkbox.addEventListener('change', function() {
+					if (this.checked) { seasonsMusic(currentSeason); } 
+					else { bgMusic.stop(); }});
+
 
 					makeParticles(fallImage, THREE.NormalBlending);
 
@@ -637,9 +672,18 @@
 				};
 
 				document.getElementById( "winter" ).onclick = function () {
-					//bgMusic.stop();
-					//seasonsMusic("winter");
 					currentSeason = "winter";
+
+					if (jQuery("#music").prop("checked")) {
+						bgMusic.stop();
+						seasonsMusic(currentSeason);
+					} else { bgMusic.stop(); }
+
+					checkbox.addEventListener('change', function() {
+					if (this.checked) { seasonsMusic(currentSeason); } 
+					else { bgMusic.stop(); }});
+
+
 					let objectsToRemove = [];
 
 					makeParticles(winterImage, THREE.AdditiveBlending);
