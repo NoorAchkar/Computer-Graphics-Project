@@ -250,22 +250,31 @@
 				const pmremGenerator = new THREE.PMREMGenerator( renderer );
 				scene.background = new THREE.Color(summerSkyColor); 
 				scene.fog = new THREE.Fog(summerSkyColor, 100, 400);  
-				scene.environment = pmremGenerator.fromScene( new RoomEnvironment( renderer ), 0.04 ).texture;
+				// scene.environment = pmremGenerator.fromScene( new RoomEnvironment( renderer ), 0.04 ).texture;
+				// scene.environment = pmremGenerator.fromScene( new RoomEnvironment( renderer ), 10.0 ).texture;
 
 				// LIGHT
 				const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); 
 				scene.add(ambientLight); 
 
 				const directionalLight = new THREE.DirectionalLight(0xffffff, 1); 
-				directionalLight.position.set(50, 200, 100); 
-				directionalLight.castShadow = true; 
+				directionalLight.position.set(0, 5, 10); 
+				//directionalLight.castShadow = true; 
 
-				directionalLight.shadow.mapSize.width = window.innerWidth; 
-				directionalLight.shadow.mapSize.height = window.innerHeight; 
-				directionalLight.shadow.camera.near = 0.5; 
-				directionalLight.shadow.camera.far = 500; 
+				//directionalLight.shadow.mapSize.width = window.innerWidth; 
+				//directionalLight.shadow.mapSize.height = window.innerHeight; 
+				//directionalLight.shadow.camera.near = 0.5; 
+				//directionalLight.shadow.camera.far = 100; 
 
 				scene.add(directionalLight); 
+
+				const pointLight = new THREE.PointLight(0xffffff, 1, 50); 
+				pointLight.position.set(0, 50, 0); 
+				scene.add(pointLight); 
+
+				const hemisphereLight = new THREE.HemisphereLight(0x3366ff, 0xff9900, 0.6); 
+				hemisphereLight.position.set(0, 50, 0); 
+				scene.add(hemisphereLight); 
 
 				// GROUND
 				const plane = new THREE.Mesh(
@@ -289,22 +298,46 @@
 				texture.repeat.set( 1, 3.5 );
 
 				const material = new THREE.MeshPhysicalMaterial( {
+					color: 0xffffff,
+					metalness: 0.9, 
+					roughness: 0.15, 
+					thickness: 0.5, 
+					envMapIntensity: 0.9, 
+					clearcoat: 1,
+					transparent: true,
+					opacity: 0.2, 
+					reflectivity: 0.8, 
+					refractionRatio: 0.985, 
+					ior: 0.9, 
+					emissive: 0xffffff,
+					emissiveIntensity: 0.7, 
+					side: THREE.DoubleSide,
+				} ); 
+				/*
+				const material = new THREE.MeshPhysicalMaterial( {
 					color: params.color,
 					metalness: params.metalness,
 					roughness: params.roughness,
+					transparency: 1,
+					thickness: 0.5,
 					ior: params.ior,
-					transmission: params.transmission, // use material.transmission for glass materials
+					transmission: params.transmission, // use material.transmission for glass materials 
 					specularIntensity: params.specularIntensity,
 					specularColor: params.specularColor,
 					opacity: params.opacity,
 					side: THREE.DoubleSide,
 					transparent: true,
-				} );
+				} ); */
+
+				const envMap = pmremGenerator.fromScene(scene).texture; 
+				material.envMap = envMap; 
 
 				mesh = new THREE.Mesh( geometry, material );
 				mesh.castShadow = true; 
 				scene.add( mesh );
 
+				const globeLight = new THREE.PointLight(0xffffff, 0.0); 
+				mesh.add(globeLight); 
 				
 				// Create a pedestal for the globe to sit on  
 				const pedestalGeometry = new THREE.CylinderGeometry(20, 20, 10, 32); 
@@ -788,6 +821,9 @@
 			function render() {
 
 				const time = Date.now() * 0.00005;
+
+				//pointLight.position.x = Math.sin(time)*30; 
+				//pointLight.position.z = Math.cos(time)*30; 
 
 				// animate snowflakes
 				for ( let i = 0; i < scene.children.length; i ++ ) {
