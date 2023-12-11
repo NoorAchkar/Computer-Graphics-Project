@@ -84,13 +84,12 @@
 			let mesh;
 			let gui;
 
-			let positions = [], velocities = [];
+			let positions = [];
 			let particles;
 
 
 			const springGroundColor = 0x2bc41b; // light green
 			const summerGroundColor = 0x3b9532; // bright green
-			//const fallGroundColor = 0x558038;  // murky green
 			const fallGroundColor = 0x964B00; // brown color
 			const winterGroundColor = 0xffffff; // white
 
@@ -123,87 +122,34 @@
 			const snowGeometry = new THREE.BufferGeometry();
 			const loadInTexture = new THREE.TextureLoader();
 
-			// load 3d models
+			// load 3D models
+			function loadModel(modelPath, pos, scale, rotY) {
+				loader.load( modelPath, function ( gltf ) {
+
+				const model = gltf.scene;
+				model.position.set( pos.x, pos.y, pos.z );
+				model.scale.set( scale.x, scale.y, scale.z );
+				model.rotateY(rotY);
+				scene.add( model );
+
+				}, undefined, function ( e ) {
+					console.error( e );
+				} );
+			}
+
 			const dracoLoader = new DRACOLoader();
 			dracoLoader.setDecoderPath( 'jsm/libs/draco/gltf/' );
 
 			const loader = new GLTFLoader();
 			loader.setDRACOLoader( dracoLoader );
-			loader.load( 'models/gltf/house.glb', function ( gltf ) {
 
-				const model = gltf.scene;
-				model.position.set( 0, -26, 0 );
-				model.scale.set( 5, 5, 5 );
-				scene.add( model );
-
-			}, undefined, function ( e ) {
-				console.error( e );
-			} );
-
-			//load pinetrees model
-			loader.load( 'models/gltf/pineTrees.glb', function ( gltf ) {
-
-				const model = gltf.scene;
-				model.position.set( -10, -20, -5 );
-				model.scale.set( 2, 2, 2 );
-				model.rotateY(25);
-				scene.add( model );
-
-			}, undefined, function ( e ) {
-			console.error( e );
-			} );
-
-			loader.load( 'models/gltf/pineTrees.glb', function ( gltf ) {
-
-				const model = gltf.scene;
-				model.position.set( 3, -22, -10 );
-				model.scale.set( 1.2, 1.2, 1.2 );
-				model.rotateY(THREE.MathUtils.degToRad(60));
-				scene.add( model );
-
-			}, undefined, function ( e ) {
-			console.error( e );
-			} );
-
-			//load leafy tree model
-			loader.load( 'models/gltf/leafyTree.glb', function ( gltf ) {
-
-				const model = gltf.scene;
-				model.position.set( 12, -20, -5 );
-				model.scale.set( 2, 2, 2 );
-				model.rotateY(135);
-				scene.add( model );
-
-			}, undefined, function ( e ) {
-			console.error( e );
-			} );
-
-			//load doghouse
-			loader.load( 'models/gltf/dogHouse.glb', function ( gltf ) {
-
-				const model = gltf.scene;
-				model.position.set( 10.5, -24, 7.5 );
-				model.scale.set( 1.5, 1.5, 1.5 );
-				model.rotateY(THREE.MathUtils.degToRad(-120));
-				scene.add( model );
-
-			}, undefined, function ( e ) {
-			console.error( e );
-			} );
-
-			//load mailbox
-			loader.load( 'models/gltf/mailbox.glb', function ( gltf ) {
-
-				const model = gltf.scene;
-				model.position.set( -5, -21, 9 );
-				model.scale.set( 0.55, 0.55, 0.55 );
-				model.rotateY(THREE.MathUtils.degToRad(-80));
-				scene.add( model );
-
-			}, undefined, function ( e ) {
-			console.error( e );
-			} );
-
+			loadModel( 'models/gltf/house.glb', new THREE.Vector3(0, -26, 0), new THREE.Vector3(5, 5, 5), 0);
+			loadModel( 'models/gltf/pineTrees.glb', new THREE.Vector3( -10, -20, -5 ), new THREE.Vector3( 2, 2, 2 ), 25);
+			loadModel( 'models/gltf/pineTrees.glb', new THREE.Vector3( 3, -22, -10 ), new THREE.Vector3( 1.2, 1.2, 1.2 ), THREE.MathUtils.degToRad(60));
+			loadModel( 'models/gltf/leafyTree.glb', new THREE.Vector3( 12, -20, -5 ), new THREE.Vector3( 2, 2, 2 ), 135);
+			loadModel( 'models/gltf/dogHouse.glb', new THREE.Vector3( 10.5, -24, 7.5 ), new THREE.Vector3( 1.5, 1.5, 1.5 ), THREE.MathUtils.degToRad(-120));
+			loadModel( 'models/gltf/mailbox.glb', new THREE.Vector3(-5, -21, 9 ), new THREE.Vector3( 0.55, 0.55, 0.55 ), THREE.MathUtils.degToRad(-80));
+			
 
 			init();
 
@@ -456,50 +402,52 @@
 					for ( let i = 0; i < scene.children.length; i ++ ) {
 						const object = scene.children[ i ];
 
-						// change ground and roof color
+						// change colors
 						if ( object instanceof THREE.Group ) {
 							for (let k = 0; k < object.children.length; k++) {
 								if (object.children[k].name == "ground") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(springGroundColor);
+									model.material.color.set(springGroundColor);
 								}
 								else if (object.children[k].name == "roof") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(roofColor);
+									model.material.color.set(roofColor);
 								}
 								else if (object.children[k].name == "largestLeaves") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									model.visible = true;
+
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(springLeavesColor);
+									model.material.color.set(springLeavesColor);
 								}
 								else if (object.children[k].name == "BigTree") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(pineColorDark);
+									model.material.color.set(pineColorDark);
 								}
 								else if (object.children[k].name == "LittleTree") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(pineColorLight);
+									model.material.color.set(pineColorLight);
 								}
 								else if (object.children[k].name == "doghouseRoof") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(doghouseRoof);
+									model.material.color.set(doghouseRoof);
 								}
 								
 							}
@@ -544,50 +492,52 @@
 					for ( let i = 0; i < scene.children.length; i ++ ) {
 						const object = scene.children[ i ];
 
-						// change ground and roof color
+						// change colors
 						if ( object instanceof THREE.Group ) {
 							for (let k = 0; k < object.children.length; k++) {
 								if (object.children[k].name == "ground") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(summerGroundColor);
+									model.material.color.set(summerGroundColor);
 								}
 								else if (object.children[k].name == "roof") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(roofColor);
+									model.material.color.set(roofColor);
 								}
 								else if (object.children[k].name == "largestLeaves") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									model.visible = true;
+
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(summerLeavesColor);
+									model.material.color.set(summerLeavesColor);
 								}
 								else if (object.children[k].name == "BigTree") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(pineColorDark);
+									model.material.color.set(pineColorDark);
 								}
 								else if (object.children[k].name == "LittleTree") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(pineColorLight);
+									model.material.color.set(pineColorLight);
 								}
 								else if (object.children[k].name == "doghouseRoof") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(doghouseRoof);
+									model.material.color.set(doghouseRoof);
 								}
 							}
 						}
@@ -612,54 +562,56 @@
 
 
 					makeParticles(fallImage, THREE.NormalBlending);
-
-					for ( let i = 0; i < scene.children.length; i ++ ) {
+					let i = 0
+					for (  i = 0; i < scene.children.length; i ++ ) {
 						const object = scene.children[ i ];
 
-						// change ground and roof color
+						// change colors
 						if ( object instanceof THREE.Group ) {
 							for (let k = 0; k < object.children.length; k++) {
 								if (object.children[k].name == "ground") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(fallGroundColor);
+									model.material.color.set(fallGroundColor);
 								}
 								else if (object.children[k].name == "roof") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(roofColor);
+									model.material.color.set(roofColor);
 								}
 								else if (object.children[k].name == "largestLeaves") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									model.visible = true;
+
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(fallLeavesColor);
+									model.material.color.set(fallLeavesColor);
 								}
 								else if (object.children[k].name == "BigTree") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(pineColorDark);
+									model.material.color.set(pineColorDark);
 								}
 								else if (object.children[k].name == "LittleTree") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(pineColorLight);
+									model.material.color.set(pineColorLight);
 								}
 								else if (object.children[k].name == "doghouseRoof") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(doghouseRoof);
+									model.material.color.set(doghouseRoof);
 								}
 							}
 						}
@@ -683,64 +635,49 @@
 					if (this.checked) { seasonsMusic(currentSeason); } 
 					else { bgMusic.stop(); }});
 
-
-					let objectsToRemove = [];
-
 					makeParticles(winterImage, THREE.AdditiveBlending);
 
 					for ( let i = 0; i < scene.children.length; i ++ ) {
 						const object = scene.children[ i ];
 
-						// change ground and roof color
+						// change colors
 						if ( object instanceof THREE.Group ) {
 							for (let k = 0; k < object.children.length; k++) {
 								if (object.children[k].name == "ground") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(winterGroundColor);
+									model.material.color.set(winterGroundColor);
 								}
 								else if ((object.children[k].name == "roof") || (object.children[k].name == "doghouseRoof")){
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(winterRoofColor);
+									model.material.color.set(winterRoofColor);
 								}
 								else if (object.children[k].name == "BigTree") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(pineColorLight);
+									model.material.color.set(pineColorLight);
 								}
 								else if (object.children[k].name == "LittleTree") {
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
+									const model = object.children[k]	
+									if (model.material) {
+										model.material = model.material.clone();
 									}
-									ground.material.color.set(pineColorLightest);
+									model.material.color.set(pineColorLightest);
 								}
 								else if (object.children[k].name == "largestLeaves") {
-									// objectsToRemove.push("largestLeaves");
-									// scene.children.slice().forEach(obj => scene.remove("largestLeaves"))
-									const ground = object.children[k]	
-									if (ground.material) {
-										ground.material = ground.material.clone();
-									}
-									ground.material.color.set(winterRoofColor);
+									// hide leaves
+									object.children[k].visible = false;
 								}
-
 							}
 						}
 					}
-
-					// for (var i = 0; i < objectsToRemove.length; i++) {
-					// 	var selectedObject = scene.getObjectByName(objectsToRemove[i]);
-       	 			// 	scene.remove( selectedObject );
-					// 		//scene.children.slice().forEach(obj => scene.remove(obj))
-					// }
 
 					scene.background = new THREE.Color(winterSkyColor); 
 					scene.fog = new THREE.Fog(winterSkyColor, 100, 400);  
@@ -797,9 +734,8 @@
 
 				}
 
-				//set attributes for both positions and velocities of the snowflakes
+				// set attributes for positions of the snowflakes
 				snowGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-				snowGeometry.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3));
 
 				//create the snowflake texture/material
 				const snowflakeTexture = new THREE.PointsMaterial({
