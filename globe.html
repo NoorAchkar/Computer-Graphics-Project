@@ -161,18 +161,6 @@
 
 			render();
 
-			/*const hdrEquirect = new RGBELoader()
-				.setPath( 'textures/equirectangular/' )
-				.load( 'venice_sunset_1k.hdr', function () {
-
-					hdrEquirect.mapping = THREE.EquirectangularReflectionMapping;
-
-					init();
-					scene.backgroundBlurriness = 1;
-					render();
-
-				} );*/
-
 			function init() {
 
 				const r = 'textures/Park3Med/'; 
@@ -203,8 +191,6 @@
 				const pmremGenerator = new THREE.PMREMGenerator( renderer );
 				scene.background = new THREE.Color(summerSkyColor); 
 				scene.fog = new THREE.Fog(summerSkyColor, 100, 400);  
-				// scene.environment = pmremGenerator.fromScene( new RoomEnvironment( renderer ), 0.04 ).texture;
-				// scene.environment = pmremGenerator.fromScene( new RoomEnvironment( renderer ), 10.0 ).texture;
 
 				// LIGHT
 				const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); 
@@ -212,12 +198,6 @@
 
 				const directionalLight = new THREE.DirectionalLight(0xffffff, 1); 
 				directionalLight.position.set(0, 5, 10); 
-				//directionalLight.castShadow = true; 
-
-				//directionalLight.shadow.mapSize.width = window.innerWidth; 
-				//directionalLight.shadow.mapSize.height = window.innerHeight; 
-				//directionalLight.shadow.camera.near = 0.5; 
-				//directionalLight.shadow.camera.far = 100; 
 
 				scene.add(directionalLight); 
 
@@ -266,21 +246,6 @@
 					emissiveIntensity: 0.7, 
 					side: THREE.DoubleSide,
 				} ); 
-				/*
-				const material = new THREE.MeshPhysicalMaterial( {
-					color: params.color,
-					metalness: params.metalness,
-					roughness: params.roughness,
-					transparency: 1,
-					thickness: 0.5,
-					ior: params.ior,
-					transmission: params.transmission, // use material.transmission for glass materials 
-					specularIntensity: params.specularIntensity,
-					specularColor: params.specularColor,
-					opacity: params.opacity,
-					side: THREE.DoubleSide,
-					transparent: true,
-				} ); */
 
 				const envMap = pmremGenerator.fromScene(scene).texture; 
 				material.envMap = envMap; 
@@ -313,56 +278,6 @@
 				animate();
 
 				// // Title for the sliders
-				// gui = new GUI( { title: 'Season' } );
-
-				// const seasonParams = {
-				// 	winter: 0,
-				// 	spring: 0,
-				// 	summer: 0,
-				// 	fall: 0,
-				// };
-
-				// gui.add(seasonParams, 'winter', 0, 1, 0.02)
-				// 	.name('Winter')
-				// 	.onChange(function () {
-				// 		// Remove existing snow particles if they exist
-				// 		const existingSnow = scene.getObjectByName('snowParticles');
-				// 		if (existingSnow) {
-				// 			scene.remove(existingSnow);
-				// 		}
-
-				// 		// Add new snow particles if the condition is met
-				// 		if (seasonParams.winter > 0.1) {
-				// 			snowFlake();
-				// 		}
-
-				// 		render();
-				// 	});
-				
-				
-				// gui.add(seasonParams, 'spring', 0, 1, 0.02)
-				// 	.name('Spring')
-				// 	.onChange(function () {
-				// 		// Adjust parameters for spring season
-				// 		material.color.setHex(seasonParams.spring > 0.5 ? 0x99ccff : 0xffffff); // change this to the function that makes spring
-				// 		render();
-				// 	});
-
-				// gui.add(seasonParams, 'summer', 0, 1, 0.02)
-				// 	.name('Summer')
-				// 	.onChange(function () {
-				// 		// Adjust parameters for summer season
-				// 		material.color.setHex(seasonParams.summer > 0.5 ? 0x99ccff : 0xffffff); // change this to the function that makes summer
-				// 		render();
-				// 	});
-				
-				// gui.add(seasonParams, 'fall', 0, 1, 0.02)
-				// 	.name('Fall')
-				// 	.onChange(function () {
-				// 		// Adjust parameters for fall season
-				// 		material.color.setHex(seasonParams.fall > 0.5 ? 0x99ccff : 0xffffff); // change this to the function that makes fall
-				// 		render();
-				// 	});
 
 				window.addEventListener( 'resize', onWindowResize );
 
@@ -381,12 +296,6 @@
 
 				document.getElementById( "spring" ).onclick = function () {
 					currentSeason = "spring";
-					// if (document.getElementById("music").checked) { alert('a'); }
-					// if (document.querySelector('.messageCheckbox').checked) { console.log("yes"); }
-					// var checkedValue = document.querySelector('.switch:checked').value;
-					// console.log(checkedValue);
-					// var isChecked = jQuery("#music").prop("checked");
-					// console.log(isChecked);
 
 					if (jQuery("#music").prop("checked")) {
 						bgMusic.stop();
@@ -459,19 +368,6 @@
 
 					plane.material.color.set(springGroundColor); 
 
-					/*
-					scene.background = new THREE.Color(springSkyColor); 
-					scene.fog = new THREE.Fog(springSkyColor, 100, 400);
-
-					plane = new THREE.Mesh(
-						new THREE.PlaneGeometry(window.innerWidth, window.innerHeight), 
-						new THREE.MeshBasicMaterial({color: springGroundColor})
-					); 
-
-					plane.receiveShadow = true; 
-					plane.rotation.x = - Math.PI / 2; 
-					plane.position.set(0, -50, 0); 
-					scene.add(plane); */
 				};
 
 				document.getElementById( "summer" ).onclick = function () {
@@ -824,9 +720,6 @@
 
 				const time = Date.now() * 0.00005;
 
-				//pointLight.position.x = Math.sin(time)*30; 
-				//pointLight.position.z = Math.cos(time)*30; 
-
 				// animate snowflakes
 				for ( let i = 0; i < scene.children.length; i ++ ) {
 					const object = scene.children[ i ];
@@ -837,8 +730,6 @@
 				}	
 				
 				//music toggle
-				// var isChecked = document.getElementsByClassName( "switch" ).checked;
-				// console.log(isChecked);
 
 				renderer.render( scene, camera );
 			}
