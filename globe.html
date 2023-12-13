@@ -277,26 +277,18 @@
 
 				animate();
 
-				// // Title for the sliders
+				// title for the sliders
 
 				window.addEventListener( 'resize', onWindowResize );
 
 				const checkbox = document.querySelector('input[type="checkbox"]');
 				let currentSeason;
 
-				// music on or off
-				checkbox.addEventListener('change', function() {
-					if (this.checked) {
-						// seasonsMusic(currentSeason);
-						// musicFlag = true;
-					} else {
-						// musicFlag = false;
-					}
-				});
-
+				// spring seasaon
 				document.getElementById( "spring" ).onclick = function () {
 					currentSeason = "spring";
 
+					// music toggle
 					if (jQuery("#music").prop("checked")) {
 						bgMusic.stop();
 						seasonsMusic(currentSeason);
@@ -306,6 +298,7 @@
 					if (this.checked) { seasonsMusic(currentSeason); } 
 					else { bgMusic.stop(); }});
 
+					// petal particles for spring
 					makeParticles(springImage, THREE.NormalBlending);
 
 					for ( let i = 0; i < scene.children.length; i ++ ) {
@@ -370,9 +363,11 @@
 
 				};
 
+				// summer season
 				document.getElementById( "summer" ).onclick = function () {
 					currentSeason = "summer";
 
+					// music
 					if (jQuery("#music").prop("checked")) {
 						bgMusic.stop();
 						seasonsMusic(currentSeason);
@@ -382,7 +377,7 @@
 					if (this.checked) { seasonsMusic(currentSeason); } 
 					else { bgMusic.stop(); }});
 
-
+					// bubble particles for summer
 					makeParticles(summerImage, THREE.NormalBlending);
 
 					for ( let i = 0; i < scene.children.length; i ++ ) {
@@ -444,9 +439,11 @@
 					plane.material.color.set(summerGroundColor); 
 				};
 
+				// fall season
 				document.getElementById( "fall" ).onclick = function () {
 					currentSeason = "fall";
 
+					// music toggle
 					if (jQuery("#music").prop("checked")) {
 						bgMusic.stop();
 						seasonsMusic(currentSeason);
@@ -456,7 +453,7 @@
 					if (this.checked) { seasonsMusic(currentSeason); } 
 					else { bgMusic.stop(); }});
 
-
+					// make leaves particles
 					makeParticles(fallImage, THREE.NormalBlending);
 					let i = 0
 					for (  i = 0; i < scene.children.length; i ++ ) {
@@ -519,9 +516,11 @@
 
 				};
 
+				// winter season
 				document.getElementById( "winter" ).onclick = function () {
 					currentSeason = "winter";
 
+					// music toggle
 					if (jQuery("#music").prop("checked")) {
 						bgMusic.stop();
 						seasonsMusic(currentSeason);
@@ -531,6 +530,7 @@
 					if (this.checked) { seasonsMusic(currentSeason); } 
 					else { bgMusic.stop(); }});
 
+					// snowflake particles
 					makeParticles(winterImage, THREE.AdditiveBlending);
 
 					for ( let i = 0; i < scene.children.length; i ++ ) {
@@ -673,6 +673,7 @@
 
 			}
 
+			// music for each season
 			function seasonsMusic(season) {
 				switch (season) {
 					case "winter":
@@ -728,8 +729,6 @@
 						object.rotation.y = time * ( i < 4 ? i + 1 : - ( i + 1 ) );
 					}
 				}	
-				
-				//music toggle
 
 				renderer.render( scene, camera );
 			}
