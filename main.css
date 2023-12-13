@@ -137,7 +137,7 @@ input:checked + .slider:after
 .radio-container {
     display: flex; 
 	border-radius: 5px;
-	max-width: 550px;
+	max-width: 600px;
 	margin-left: 900px;
 }
 
